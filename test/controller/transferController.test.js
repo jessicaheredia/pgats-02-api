@@ -4,6 +4,8 @@ const { expect }  = require('chai');
 
 const app = require('../../app');
 
+const transferService = require('../../service/transferService');
+
 describe('Transfer Controller', ()=>{
     describe('POST /transfer', () =>{
         it('Quando informo remetente e destinatario inexistente, recebo 400!', async () =>{
@@ -15,10 +17,27 @@ describe('Transfer Controller', ()=>{
                 value: 200
             });
            expect(resposta.status).to.equal(400);
-           expect(resposta.body).to.have.property('error', "Usuário remetente ou destinatário não encontrado");
+           expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+        });
+        it('Usando moks: Quando informo remetente e destinatario inexistente, recebo 400!', async () =>{
+            const transferServiceMock = sinon.stub(transferService, 'transferValue');
+            transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado'))
+
+            const resposta = await request(app)
+            .post('/transfer')
+            .send({
+                from:'Jessica',
+                to: 'Vinicius',
+                value: 200
+            });
+           expect(resposta.status).to.equal(400);
+           expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
+
+           sinon.restore();
         });
     });
     describe('GET /transfer', () =>{
+        
         
     });
 });
