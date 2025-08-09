@@ -15,7 +15,7 @@ describe('Transfer Controller', ()=>{
                 value: 200
             });
            expect(resposta.status).to.equal(400);
-           expect(resposta.body).to.have.property('error', "Usuário remetente ou destinatário não encontrado");
+           expect(resposta.body).to.have.property('error', "Usuário remetente ou destinatário encontrado");
         });
     });
     describe('GET /transfer', () =>{
