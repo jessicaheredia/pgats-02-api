@@ -1,6 +1,20 @@
 {
+  "name": "pgats-02-api",
+  "version": "1.0.0",
+  "description": "API Rest para aprendizado de testes e automação de serviços.",
+  "main": "server.js",
+  "author": "jessicaheredia",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha test/**/*.test.js --timeout 10000",
+    "start": "node server.js"
+  },
   "dependencies": {
+    "chai": "^5.2.1",
     "express": "^5.1.0",
+    "mocha": "^11.7.1",
+    "sinon": "^21.0.0",
+    "supertest": "^7.1.4",
     "swagger-ui-express": "^5.0.1"
   }
 }
