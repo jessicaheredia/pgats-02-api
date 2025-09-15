@@ -2,6 +2,7 @@ const request = require('supertest');
 const sinon = require('sinon');
 const { expect }  = require('chai');
 
+
 const app = require('../../app');
 
 const transferService = require('../../service/transferService');
@@ -35,7 +36,7 @@ describe('Transfer Controller', ()=>{
 
            sinon.restore();
         });
-        it('Usando moks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () =>{
+        it.only('Usando moks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () =>{
             const transferServiceMock = sinon.stub(transferService, 'transferValue');
             transferServiceMock.returns({
                  from:'Jessica',
@@ -51,9 +52,14 @@ describe('Transfer Controller', ()=>{
                 value: 200
             });
          expect(resposta.status).to.equal(201);
-         expect(resposta.body).to.have.property('from', 'Jessica');
-         expect(resposta.body).to.have.property('to', 'Vinicius');
-         expect(resposta.body).to.have.property('value', 200);
+
+         const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json')
+         expect(resposta.body).to.deep.equal(respostaEsperada);
+        
+         //expect(resposta.body).to.have.property('from', 'Jessica');
+         //expect(resposta.body).to.have.property('to', 'Vinicius');
+         //expect(resposta.body).to.have.property('value', 200);
+         //console.log(resposta.body)
 
            sinon.restore();
         });        
