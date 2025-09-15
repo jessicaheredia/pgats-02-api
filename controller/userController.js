@@ -1,4 +1,6 @@
 const userService = require('../service/userService');
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.JWT_SECRET || 'seusegredoaqui';
 
 exports.register = (req, res) => {
   try {
@@ -16,7 +18,9 @@ exports.login = (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ error: 'Informe login e senha' });
     const user = userService.loginUser({ username, password });
-    res.json(user);
+    // Gera o token JWT
+    const token = jwt.sign({ username: user.username }, SECRET, { expiresIn: '1h' });
+    res.json({ token });
   } catch (err) {
     res.status(401).json({ error: err.message });
   }

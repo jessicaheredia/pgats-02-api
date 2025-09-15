@@ -3,12 +3,22 @@ const { expect }  = require('chai');
 
 describe('Transfer', ()=>{
     describe('POST /transfer', () =>{
-        it('Quando informo remetente e destinatario inexistente, recebo 400!', async () =>{
+        it.only('Quando informo remetente e destinatario inexistente, recebo 400!', async () =>{
+            const respostaLogin = await request('http://localhost:3000')
+                .post('/login')
+                .send({
+                    username: 'Jessica',
+                    password: '123456'
+                });
+
+            const token = respostaLogin.body.token;
+            
             const resposta = await request('http://localhost:3000')
-            .post('/transfer')
-            .send({
+                .post('/transfer')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
                 from:"Jessica",
-                to: "Vinicius",
+                to: "Wandinha",
                 value: 200
             });
            expect(resposta.status).to.equal(400);
