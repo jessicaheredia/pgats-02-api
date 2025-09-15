@@ -35,9 +35,30 @@ describe('Transfer Controller', ()=>{
 
            sinon.restore();
         });
+        it('Usando moks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () =>{
+            const transferServiceMock = sinon.stub(transferService, 'transferValue');
+            transferServiceMock.returns({
+                 from:'Jessica',
+                 to: 'Vinicius',
+                 value: 200
+        });
+             
+            const resposta = await request(app)
+            .post('/transfer')
+            .send({
+                from:'Jessica',
+                to: 'Vinicius',
+                value: 200
+            });
+         expect(resposta.status).to.equal(201);
+         expect(resposta.body).to.have.property('from', 'Jessica');
+         expect(resposta.body).to.have.property('to', 'Vinicius');
+         expect(resposta.body).to.have.property('value', 200);
+
+           sinon.restore();
+        });        
     });
     describe('GET /transfer', () =>{
-        
         
     });
 });
