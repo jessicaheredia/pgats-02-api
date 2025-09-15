@@ -2,30 +2,43 @@ const request = require('supertest');
 const sinon = require('sinon');
 const { expect }  = require('chai');
 
-
 const app = require('../../app');
-
 const transferService = require('../../service/transferService');
 
 describe('Transfer Controller', ()=>{
     describe('POST /transfer', () =>{
+
+        beforeEach(async () => {
+             const respostaLogin = await request(app)
+            .post('/login')
+            .send({
+                username: 'Jessica',
+                password: '123456'
+            });
+            
+            token = respostaLogin.body.token;
+        })
+
         it('Quando informo remetente e destinatario inexistente, recebo 400!', async () =>{
             const resposta = await request(app)
             .post('/transfer')
+            .set('Authorization', `Bearer ${token}`)
             .send({
                 from:"Jessica",
-                to: "Vinicius",
+                to: "Wandinha",
                 value: 200
             });
            expect(resposta.status).to.equal(400);
            expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
         });
+
         it('Usando moks: Quando informo remetente e destinatario inexistente, recebo 400!', async () =>{
             const transferServiceMock = sinon.stub(transferService, 'transferValue');
             transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado'))
 
             const resposta = await request(app)
             .post('/transfer')
+            .set('Authorization', `Bearer ${token}`)
             .send({
                 from:'Jessica',
                 to: 'Vinicius',
@@ -33,9 +46,8 @@ describe('Transfer Controller', ()=>{
             });
            expect(resposta.status).to.equal(400);
            expect(resposta.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
-
-           sinon.restore();
         });
+
         it('Usando moks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () =>{
             const transferServiceMock = sinon.stub(transferService, 'transferValue');
             transferServiceMock.returns({
@@ -46,6 +58,7 @@ describe('Transfer Controller', ()=>{
              
             const resposta = await request(app)
             .post('/transfer')
+            .set('Authorization', `Bearer ${token}`)
             .send({
                 from:'Jessica',
                 to: 'Vinicius',
@@ -61,8 +74,10 @@ describe('Transfer Controller', ()=>{
          //expect(resposta.body).to.have.property('value', 200);
          //console.log(resposta.body)
 
-           sinon.restore();
-        });        
+        }); 
+        afterEach(() =>{
+            sinon.restore();
+        })
     });
     describe('GET /transfer', () =>{
         

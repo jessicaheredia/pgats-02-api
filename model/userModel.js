@@ -3,7 +3,7 @@ const users = [
   {
     username:'Jessica',
     password: '123456',
-    favorecidos: true
+    favorecido: true
   }
 ];
 
